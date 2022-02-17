@@ -49,8 +49,10 @@
         <a href="{% url 'contact' %}">contact-us</a>|
         <a href="{% url 'allproducts' %}">Categories</a>|
         <a href="{% url 'mycart' %}">My Cart</a>|
+        
         {% if request.user.customer %}
         Welcome {{ request.user.username}}
+        <a href="{% url 'customerprofile' %}">My profile</a>
         <a href="{% url 'customerlogout' %}">Logout</a>|
         {% else %}
         <a href="{% url 'customerregistration' %}">Register</a>|
