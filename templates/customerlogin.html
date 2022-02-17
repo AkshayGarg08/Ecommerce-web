@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Customer Login{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h3>Customer Login Form</h3><hr>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-info">Login</button>
+                {% if error %}
+                <li style="color: red;">{{error}}</li>
+                {% endif %}
+            </form>
+            <p>or don't have an account <a href="{% url 'customerregistration' %}{% if request.GET.next %}?next={{request.GET.next}} {% endif %}">Create Acoount</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

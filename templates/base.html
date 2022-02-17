@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -17,31 +17,48 @@
                 <li class="nav-item active">
                   <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ">
                   <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{% url 'allproducts' %}">Categories</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                   <a class="nav-link" href="{% url 'mycart' %}">My cart</a>
                 </li>
+                {% if request.user.customer %}
+                Welcome {{ request.user.username}}
+                <a href="{% url 'customerlogout' %}">Logout</a>
+                {% else %}
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'customerregistration' %}">Register</a>
+                </li>
+                <li>
+                  <a class="nav-link text-right" href="{% url 'customerlogin' %}">Login</a>
+                </li>
+                {% endif %}
               </ul>
             </div>
-          </nav>
+          </nav> -->
 
-        <!-- <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'about' %}">About us</a>
-        <a href="{% url 'contact' %}">contact-us</a>
-        <a href="{% url 'allproducts' %}">Categories</a>
-        <a href="{% url 'mycart' %}">My Cart</a>
-        <hr> -->
+        <a href="{% url 'home' %}">Home</a>|
+        <a href="{% url 'about' %}">About us</a>|
+        <a href="{% url 'contact' %}">contact-us</a>|
+        <a href="{% url 'allproducts' %}">Categories</a>|
+        <a href="{% url 'mycart' %}">My Cart</a>|
+        {% if request.user.customer %}
+        Welcome {{ request.user.username}}
+        <a href="{% url 'customerlogout' %}">Logout</a>|
+        {% else %}
+        <a href="{% url 'customerregistration' %}">Register</a>|
+        <a href="{% url 'customerlogin' %}">Login</a>
+        {% endif %}
+        <hr>
     
-    
-    
+
     {% block content %}
 
     {% endblock %}

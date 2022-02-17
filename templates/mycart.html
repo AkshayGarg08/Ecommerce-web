@@ -41,6 +41,13 @@
                             <th><a href="{% url 'emptycart' %}" class="btn btn-danger">Empty cart</a></th>
                         {% endif %}
                     </tr>
+                    {% if cart.cartproduct_set.all %}
+                    <tr>
+                        <th>
+                            <a href="{% url 'checkout' %}" class="btn btn-info">Checkout</a>
+                        </th>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
 

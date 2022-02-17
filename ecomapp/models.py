@@ -57,11 +57,11 @@ class CartProduct(models.Model):
     
  
 ORDER_STATUS = (
-     ("Order Received", "Order Received"),
-     ("Order Processing", "Order Processing"),
-     ("on the way", "on the way"),
-     ("Order Completed", "Order Completed"),
-     ("Order Processing", "Order Processing"),
+     ("Order Received", "Order-Received"),
+     ("Order Processing", "Order-Processing"),
+     ("on the way", "on-the-way"),
+     ("Order Completed", "Order-Completed"),
+     ("Order Processing", "Order-Processing"),
 )   
     
 
@@ -79,4 +79,4 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return "Order: " + str(self.id)
+        return "Order: " + str(self.id) + "->" + str(self.ordered_by)
