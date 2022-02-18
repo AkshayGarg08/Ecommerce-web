@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'adminpages/adminbase.html' %}
+{% block title %} Order detail {% endblock %}
 {% load humanize %}
-
-{% block title %}Customer Order{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -43,8 +42,8 @@
                     </tr>
                 </tbody>
             </table>
-        
         </div>
     </div>
 </div>
+
 {% endblock %}

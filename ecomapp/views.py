@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect
-from django.views.generic import View ,TemplateView , CreateView , DetailView
+from django.views.generic import View ,TemplateView , CreateView , DetailView ,ListView
 from django.urls import reverse_lazy
 from .forms import CheckoutForm , CustomerRegistrationForm ,CustomerLoginForm
 from .models import *
@@ -216,12 +216,12 @@ class CustomerLoginview(FormView):
     form_class = CustomerLoginForm
     success_url = reverse_lazy("home")
     
-    # form_valid method is a type of ost method and is available in formviw and createview
+    # form_valid method is a type of post method and is available in formviw and createview
     def form_valid(self,form):
         uname = form.cleaned_data.get("username")
         pword = form.cleaned_data.get("password")
         usr = authenticate(username=uname , password=pword)
-        if usr is not None and usr.customer:
+        if usr is not None and Customer.objects.filter(user=usr).exists():
             login(self.request,usr)
         else:
             return render(self.request , "customerlogin.html" ,{"form":CustomerLoginForm , "error":"invalid credential"})
@@ -247,7 +247,7 @@ class CustomerProfileView(TemplateView):
     template_name = "customerprofile.html"
     
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.customer:
+        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
             pass
         else:
             return redirect("/login/?next=/profile/")
@@ -269,7 +269,7 @@ class CustomerOrderDetailView(DetailView):
     context_object_name = "ord_obj"
     
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.customer:
+        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
             order_id = self.kwargs["pk"]
             order = Order.objects.get(id=order_id)
             if request.user.customer != order.cart.customer:
@@ -277,4 +277,58 @@ class CustomerOrderDetailView(DetailView):
         else:
             return redirect("/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
+    
+    
+# Admin pages
+class AdminLoginView(FormView):
+    template_name = "adminpages/adminlogin.html"
+    form_class = CustomerLoginForm
+    success_url = reverse_lazy("adminhome")
+    
+    def form_valid(self , form):
+        uname = form.cleaned_data.get("username")
+        pword = form.cleaned_data.get("password")
+        usr = authenticate(username=uname , password=pword)
+        if usr is not None and Admin.objects.filter(user=usr).exists():
+            login(self.request,usr)
+        else:
+            return render(self.request , self.template_name ,{"form":self.form_class , "error":"invalid credential"})
+        return super().form_valid(form)
+    
+    
+    
+class AdminRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and Admin.objects.filter(user=request.user).exists():
+            pass
+        else:
+            return redirect("/admin-login")
+        return super().dispatch(request, *args, **kwargs)
+    
+class AdminHomeView(AdminRequiredMixin , TemplateView):
+    template_name = "adminpages/adminhome.html"
+    
+    def get_context_data(self , **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pendingorders"] = Order.objects.filter(order_status="Order Received").order_by("-id")
+        
+        return context
+    
+class AdminOrderDetailView(AdminRequiredMixin , DetailView):
+    template_name = "adminpages/adminorderdetail.html"
+    model = Order 
+    context_object_name = "ord_obj"   
+    
+class AdminOrderListView(AdminRequiredMixin , ListView):
+    template_name = "adminpages/adminorderlist.html"
+    queryset = Order.objects.all().order_by("-id")
+    context_object_name ="allorders"
+    
+    
+    
+    
+    
+    
+    
+    
     
