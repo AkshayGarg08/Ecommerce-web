@@ -71,7 +71,7 @@ ORDER_STATUS = (
      ("Order Processing", "Order-Processing"),
      ("on the way", "on-the-way"),
      ("Order Completed", "Order-Completed"),
-     ("Order Processing", "Order-Processing"),
+     ("Order Cancelled", "Order-Cancelled"),
 )   
 
 

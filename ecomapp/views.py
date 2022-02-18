@@ -295,8 +295,6 @@ class AdminLoginView(FormView):
             return render(self.request , self.template_name ,{"form":self.form_class , "error":"invalid credential"})
         return super().form_valid(form)
     
-    
-    
 class AdminRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated and Admin.objects.filter(user=request.user).exists():
@@ -307,7 +305,6 @@ class AdminRequiredMixin(object):
     
 class AdminHomeView(AdminRequiredMixin , TemplateView):
     template_name = "adminpages/adminhome.html"
-    
     def get_context_data(self , **kwargs):
         context = super().get_context_data(**kwargs)
         context["pendingorders"] = Order.objects.filter(order_status="Order Received").order_by("-id")
@@ -317,14 +314,28 @@ class AdminHomeView(AdminRequiredMixin , TemplateView):
 class AdminOrderDetailView(AdminRequiredMixin , DetailView):
     template_name = "adminpages/adminorderdetail.html"
     model = Order 
-    context_object_name = "ord_obj"   
+    context_object_name = "ord_obj"  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["allstatus"] = ORDER_STATUS 
+        return context
+     
     
 class AdminOrderListView(AdminRequiredMixin , ListView):
     template_name = "adminpages/adminorderlist.html"
     queryset = Order.objects.all().order_by("-id")
     context_object_name ="allorders"
     
-    
+# For changing the product_status by admin
+
+class AdminOrderStatusChange(AdminRequiredMixin,View):
+    def post(self ,request,*args,**kwargs):
+        order_id = self.kwargs["pk"]
+        order_obj = Order.objects.get(id=order_id)
+        new_status = request.POST.get("status")
+        order_obj.order_status = new_status
+        order_obj.save()
+        return redirect(reverse_lazy("adminorderdetail" , kwargs={"pk":self.kwargs["pk"]}))
     
     
     
