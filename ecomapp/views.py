@@ -2,9 +2,10 @@ from django.shortcuts import render , redirect
 from django.views.generic import View ,TemplateView , CreateView , DetailView ,ListView
 from django.urls import reverse_lazy
 from .forms import CheckoutForm , CustomerRegistrationForm ,CustomerLoginForm
-from .models import *
 from django.contrib.auth import authenticate , login ,logout
 from django.views.generic.edit import FormView
+from .models import *
+from django.db.models import Q
 
 
 class EcomMixin(object):
@@ -277,6 +278,19 @@ class CustomerOrderDetailView(DetailView):
         else:
             return redirect("/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
+    
+# Search view
+class SearchView(TemplateView):
+    template_name = "search.html"
+    def get_context_data(self , **kwargs):
+        context = super().get_context_data(**kwargs)
+        # kw = self.request.GET["keyword"]
+        # get the value of a key using get() method in dictionary
+        kw = self.request.GET.get("keyword")
+        results = Product.objects.filter(Q(title__icontains=kw) | Q(description__icontains=kw))
+        context["results"] = results
+        return context
+    
     
     
 # Admin pages
