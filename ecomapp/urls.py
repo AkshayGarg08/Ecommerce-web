@@ -25,7 +25,6 @@ urlpatterns = [
     # search page
     path("search/" , SearchView.as_view() , name="search"),
 
-
     # admin side pages
     path("admin-login/" , AdminLoginView.as_view(), name="adminlogin"),
     path("admin-home/" , AdminHomeView.as_view(), name="adminhome"),
